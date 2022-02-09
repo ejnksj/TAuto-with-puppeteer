@@ -4,10 +4,10 @@ function delay(ms) {
     setTimeout(resolve, ms)
   });
 }
-const twitchUserName = "tinatu00";
-const twitchUserPassword = "twip12!@twip12!@";
+const twitchUserName = "twitch ID";
+const twitchUserPassword = "twitch PW";
 const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scroll-content > div > div > div > div.Layout-sc-nxg1ff-0.eFpRTs > form > div > div:nth-child(3) > button';
-const autoBrowser = async () => {
+(async () => {
   const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
   await page.goto('https://twip.kr');
@@ -21,7 +21,4 @@ const autoBrowser = async () => {
   await page.type('[id=password-input]', twitchUserPassword);
   await page.click(twitchLoginButton);
 
-}
-
-
-autoBrowser();
+})();
