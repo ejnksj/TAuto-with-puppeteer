@@ -1,0 +1,1 @@
+start cmd /k "node twiptest_manual_login.js"
