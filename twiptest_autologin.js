@@ -1,4 +1,5 @@
 const puppeteer = require(/*puppeteer*/'puppeteer-core');
+const fs = require('fs');
 function delay(ms) {
   return new Promise(function(resolve) {
     setTimeout(resolve, ms)
@@ -17,13 +18,25 @@ const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scr
     {args: [/*'--window-size=1388,768', '--remote-debugging-port=21222', */'--user-data-dir=C:\\Users\\tehrb\\AppData\\Local\\Google\\Chrome\\User Data']}
   );
   const page = await browser.newPage();
+
+  ///////////set cookies
+  const cookies = fs.readFileSync('cookies.json', 'utf8');
+
+  const deserializedCookies = JSON.parse(cookies);
+  await page.setCookie(...deserializedCookies);
+  ///////////
+
   await page.setViewport({width: 800, height: 600});
-  await page.goto('Target URL');
+  await page.goto('https://ejn.mytwip.net/');
+  await delay(5000);
+  ///////////hide this due to Cookies Set////////////////
+/**********************************************************
   //click login(watcher) button
   await page.click("#login-button-area a.lbtn.watcher");
   //wait for twitch login page
   await page.waitForSelector(twitchLoginButton,{visible: true});
   await delay(500);
+
   //input id and pw, click login button
   await page.click('input[id=login-username]');
   await page.type('[id=login-username]', twitchUserName);
@@ -32,7 +45,9 @@ const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scr
   await page.click(twitchLoginButton);
   //wait for email auth completed, and twip page(logged in state)
   await page.waitForSelector('#nav > a:nth-child(5)',{visible: true});
+
   await delay(500);
+**********************************************************/
 
   //logged in twip completely, now do some tasks
   //////////////////////////////////////////////////
@@ -66,5 +81,14 @@ const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scr
      cashBefore === (cashAfter+1000)
     )+ " / " + now
   );
+
+/////////////unhide this when cookies expired//////////////
+/*
+  const cookies = await page.cookies()
+  const cookieJson = JSON.stringify(cookies)
+
+  fs.writeFileSync('cookies.json', cookieJson)
+*/
+//////////////////////////////////////////////////////////
 
 })();

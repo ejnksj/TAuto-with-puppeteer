@@ -1,0 +1,1 @@
+start cmd /k "node get_twitch_cookie.js"
