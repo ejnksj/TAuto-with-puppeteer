@@ -5,18 +5,20 @@ function delay(ms) {
     setTimeout(resolve, ms)
   });
 }
-const twitchUserName = "Twitch ID";
-const twitchUserPassword = "Twitch PW";
+const twitchUserName = "ID";
+const twitchUserPassword = "PW";
+const twitchAlertboxURL = 'AlertboxUrl';
 
-const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scroll-content > div > div > div > div.Layout-sc-nxg1ff-0.eFpRTs > form > div > div:nth-child(3) > button';
+//const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scroll-content > div > div > div > div:nth-child(3) > form > div > div:nth-child(3) > button';
 
 //main function
 (async () => {
   //open page, goto twip.kr
   const browser = await puppeteer.launch(
     {headless: false, executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'},
-    {args: [/*'--window-size=1388,768', '--remote-debugging-port=21222', */'--user-data-dir=C:\\Users\\tehrb\\AppData\\Local\\Google\\Chrome\\User Data']}
+    {args: [/*'--window-size=1388,768', '--remote-debugging-port=21222', */'--user-data-dir=C:\\Users\\user\\AppData\\Local\\Google\\Chrome\\User Data']}
   );
+  const alertboxPage = await browser.newPage();
   const page = await browser.newPage();
 
   ///////////set cookies
@@ -26,9 +28,11 @@ const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scr
   await page.setCookie(...deserializedCookies);
   ///////////
 
+  await alertboxPage.goto(twitchAlertboxURL);
+
   await page.setViewport({width: 800, height: 600});
-  await page.goto('https://ejn.mytwip.net/');
-  await delay(5000);
+  await page.goto('https://twip.kr');
+  await delay(1500);
   ///////////hide this due to Cookies Set////////////////
 /**********************************************************
   //click login(watcher) button
@@ -74,6 +78,11 @@ const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scr
   cashElement = await page.$(nowCashSelector);
   let cashAfter = await page.evaluate(el => el.textContent, cashElement);
   cashAfter = Number(cashAfter.replace(/,/g, ""));
+
+  //get text from alrerboxpage, to confirm donation success
+  let isAlerboxActed = 0;
+
+
   var now = new Date();
   console.log(
     (

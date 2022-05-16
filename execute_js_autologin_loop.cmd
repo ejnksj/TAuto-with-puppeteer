@@ -1,0 +1,1 @@
+start cmd /k "node twiptest_autologin_loop.js"
