@@ -5,20 +5,22 @@ function delay(ms) {
     setTimeout(resolve, ms)
   });
 }
-const twitchUserName = "ID";
-const twitchUserPassword = "PW";
-
+const twitchUserName = "twitch ID";
+const twitchUserPassword = "twitch PW";
+const twipURL = 'https://twip.kr';
 const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scroll-content > div > div > div > div:nth-child(3) > form > div > div:nth-child(3) > button';
 
 (async () => {
   const browser = await puppeteer.launch(
     {headless: false, executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'},
-    {args: ['--user-data-dir=C:\\Users\\user\\AppData\\Local\\Google\\Chrome\\User Data']}
+    {args: ['--user-data-dir=C:\\Users\\tehrb\\AppData\\Local\\Google\\Chrome\\User Data']}
   );
-  const page = await browser.newPage();
+  //const page = await browser.newPage();
+  let pages = await browser.pages();
+  let page = pages[0];
 
   await page.setViewport({width: 800, height: 600});
-  await page.goto('https://twip.kr/');
+  await page.goto(twipURL);
 
   await page.click("#login-button-area a.lbtn.watcher");
   await page.waitForSelector(twitchLoginButton,{visible: true});
@@ -29,7 +31,7 @@ const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scr
   await page.click('input[id=password-input]');
   await page.type('[id=password-input]', twitchUserPassword);
   await page.click(twitchLoginButton);
-//  await page.waitForSelector('#nav > a:nth-child(5)',{visible: true});
+  await page.waitForSelector('#nav > a:nth-child(5)',{visible: true});
 
   await delay(8000);
 
@@ -40,4 +42,5 @@ const twitchLoginButton = '#root > div > div.scrollable-area > div.simplebar-scr
   fs.writeFileSync('cookies.json', cookieJson)
 
   console.log("GET_COOKIES End");
+  await page.close();
 })();
